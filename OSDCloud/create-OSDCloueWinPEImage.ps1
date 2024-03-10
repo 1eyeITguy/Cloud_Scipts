@@ -13,7 +13,7 @@ Version: 1.0
 
 #>
 
-$brand = 'Sight & Sound Theatres'
+$brand = 'Learning IT Together'
 $wallpaperPath = "E:\SSWallpaper2017_1920x1080.jpg"
 
 
@@ -59,7 +59,7 @@ New-OSDCloudTemplate
 New-OSDCloudWorkspace
 
 # Edit the WinPE image with branding and all drivers
-Edit-OSDCloudWinPE -StartOSDCloudGUI -Brand $brand -CloudDriver * -Wallpaper $wallpaperPath
+Edit-OSDCloudWinPE -StartOSDCloudGUI -Brand $brand -CloudDriver * #-Wallpaper $wallpaperPath
 
 # Set OSDCloudGUI Defaults for the PXE boot image
 # Set the path to the boot.wim file

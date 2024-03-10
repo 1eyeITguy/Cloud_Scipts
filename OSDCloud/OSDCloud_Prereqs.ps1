@@ -9,34 +9,48 @@ https://www.osdcloud.com/osdcloud/setup
 [CmdletBinding()]
 param()
 
-if (Get-Command 'WinGet' -ErrorAction SilentlyContinue) {
-    Write-Host -ForegroundColor Green -Message '[+] WinGet is installed.'
-} else {
-    try {
-        Invoke-Expression (Invoke-RestMethod -uri "https://raw.githubusercontent.com/1eyeITguy/Cloud_Scipts/main/WinGet/Install-WinGet_Server2022.ps1")
-    }
-    catch {
-        Write-Error -Message 'WinGet could not be installed.'
-    }
+# Define the download URLs
+$adkUrl = "https://download.microsoft.com/download/6/7/4/674ec7db-7c89-4f2b-8363-689055c2b430/adk/adksetup.exe"
+$addonUrl = "https://download.microsoft.com/download/5/2/5/525dcde0-c7b8-487a-894d-0952775a78c7/adkwinpeaddons/adkwinpesetup.exe"
+$mdtUrl = "https://download.microsoft.com/download/3/3/9/339BE62D-B4B8-4956-B58D-73C4685FC492/MicrosoftDeploymentToolkit_x64.msi"
+
+# Define the installation paths
+$adkInstallerPath = "C:\temp\adksetup.exe"
+$addonInstallerPath = "C:\temp\adkwinpesetup.exe"
+$mdtInstallerPath = "C:\temp\MicrosoftDeploymentToolkit_x64.msi"
+
+# Create C:\temp directory if it doesn't exist
+if (-not (Test-Path -Path "C:\temp" -PathType Container)) {
+    New-Item -Path "C:\temp" -ItemType Directory | Out-Null
+    Write-Host -ForegroundColor Green "[+] Created C:\Temp Directory"
 }
 
-if (Get-Command 'WinGet' -ErrorAction SilentlyContinue) {
+# Download the installers using curl 
+curl -Uri $adkUrl -OutFile $adkInstallerPath
+curl -Uri $addonUrl -OutFile $addonInstallerPath
+curl -Uri $mdtUrl -OutFile $mdtInstallerPath
 
-# Microsoft ADK Windows 11 22H2 10.1.22621.1
-Write-Host -ForegroundColor Green "[+] Installing the Windows ADK"
-winget install --id Microsoft.WindowsADK --version 10.1.22621.1 --exact --accept-source-agreements --accept-package-agreements
+# Install ADK silently
+Write-Host -ForegroundColor Yellow "[-] Installing Windows ADK..."
+Start-Process -FilePath $adkInstallerPath -ArgumentList "/quiet" -Wait
+Write-Host -ForegroundColor Green "[+] Windows ADK Installed"
 
-Write-Host -ForegroundColor Green "[+] Installing the WinPE Add-On"
-winget install --id Microsoft.ADKPEAddon --version 10.1.22621.1 --exact --accept-source-agreements --accept-package-agreements
+# Install WinPE Addon silently
+Write-Host -ForegroundColor Yellow "[-] Installing WinPE Add-On..."
+Start-Process -FilePath $addonInstallerPath -ArgumentList "/quiet" -Wait
+Write-Host -ForegroundColor Green "[+] WinPE Add-On installed"
 
+# Install MDT silently
+Write-Host -ForegroundColor Yellow "[-] Installing MDT..."
+Start-Process -FilePath msiexec.exe -ArgumentList "/i $mdtInstallerPath /quiet" -Wait
 New-Item -Path 'C:\Program Files (x86)\Windows Kits\10\Assessment and Deployment Kit\Windows Preinstallation Environment\x86\WinPE_OCs' -ItemType Directory -Force | Out-Null
+Write-Host -ForegroundColor Green "[+] MDT Installed"
 
-# Microsoft Deployment Toolkit
-Write-Host -ForegroundColor Green "[+] Installing MDT"
-winget install --id Microsoft.DeploymentToolkit --version 6.3.8456.1000 --exact --accept-source-agreements --accept-package-agreements
-} else {
-    Write-Error -Message 'WinGet is not installed.'
-}
+# Clean up: Delete the downloaded installers
+Remove-Item -Path $adkInstallerPath, $addonInstallerPath, $mdtInstallerPath -Force | Out-Null
+
+Write-Host -ForegroundColor Green "[+] Windows ADK, WinPE Addon, and MDT have been installed silently."
+
 
 # Check if the OSD module is installed
 if (-not (Get-Module -ListAvailable -Name OSD)) {
