@@ -13,7 +13,7 @@ if (Get-Command 'WinGet' -ErrorAction SilentlyContinue) {
     Write-Host -ForegroundColor Green -Message '[+] WinGet is installed.'
 } else {
     try {
-        Invoke-Expression (Invoke-RestMethod -uri "https://gist.githubusercontent.com/likamrat/cae833a6e5b3461709f14c093c21c293/raw/ce5a3210262b9a82626b0553e1fcefd809f52ea6/WinGet_WinSrv.ps1")
+        Invoke-Expression (Invoke-RestMethod -uri "https://raw.githubusercontent.com/1eyeITguy/Cloud_Scipts/main/WinGet/Install-WinGet_Server2022.ps1")
     }
     catch {
         Write-Error -Message 'WinGet could not be installed.'
@@ -21,6 +21,7 @@ if (Get-Command 'WinGet' -ErrorAction SilentlyContinue) {
 }
 
 if (Get-Command 'WinGet' -ErrorAction SilentlyContinue) {
+
 # Microsoft ADK Windows 11 22H2 10.1.22621.1
 Write-Host -ForegroundColor Green "[+] Installing the Windows ADK"
 winget install --id Microsoft.WindowsADK --version 10.1.22621.1 --exact --accept-source-agreements --accept-package-agreements
@@ -44,6 +45,7 @@ if (-not (Get-Module -ListAvailable -Name OSD)) {
     Write-Host -ForegroundColor Green "[+] Transport Layer Security (TLS) 1.2"
     [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12
 
+    # Pre-Load some OSDCloud functions
     Invoke-Expression (Invoke-RestMethod -Uri 'https://raw.githubusercontent.com/OSDeploy/OSD/master/cloud/modules/_anywhere.psm1')
     osdcloud-InstallPackageManagement
     osdcloud-TrustPSGallery
