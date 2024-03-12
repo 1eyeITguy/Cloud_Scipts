@@ -1,7 +1,7 @@
 #Requires -RunAsAdministrator
 <#
 .DESCRIPTION
-Installs WinGet, Microsoft ADK and the Windows PE add-on for Windows 11, version 22H2, and MDT using WinGet.  ALso installs the OSDCloud 
+Installs WinGet, Microsoft ADK and the Windows PE add-on for Windows 11, version 22H2, and MDT.  ALso installs the OSDCloud 
 PowerShell module if not intalled. 
 .LINK
 https://www.osdcloud.com/osdcloud/setup
