@@ -71,5 +71,5 @@ if (-not (Get-Module -ListAvailable -Name OSD)) {
     Import-Module -Name OSD
     Write-Host -ForegroundColor Green "[+] OSD module has been installed and imported."
 } else {
-    Write-Host -ForegroundColor Green "[+} OSD module is already installed."
+    Write-Host -ForegroundColor Green "[+] OSD module is already installed."
 }
